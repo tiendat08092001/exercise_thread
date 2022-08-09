@@ -14,7 +14,7 @@
         android:background="#E1D8D8"
         android:text="0"
         android:textStyle="bold"
-        android:textSize="40sp"
+        android:textSize="70sp"
         app:layout_constraintBottom_toTopOf="@id/btnPlus"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

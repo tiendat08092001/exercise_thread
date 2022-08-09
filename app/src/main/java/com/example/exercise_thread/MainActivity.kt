@@ -42,7 +42,10 @@ class MainActivity : AppCompatActivity() {
         while (true) {
             if (isSwipe) {
                 handler.sendEmptyMessage(MSG_UPDATE_NUMBER)
-                Thread.sleep(80)
+                isRun = false
+                isUpdate = false
+                countDownTimerSwipe.start()
+                Thread.sleep(50)
             }
         }
     }
@@ -154,18 +157,24 @@ class MainActivity : AppCompatActivity() {
                     isUpdate = false
                     isRun = false
                     isTouch = true
+
+                    if (y2 == y1) {
+                        isSwipe = true
+                        isPlus = true
+                    }
+
                     if (y2 > tg) {
                         tg = y2
                         isPlus = false
                         isSwipe = true
 
-                        countDownTimerSwipe.start()
 
                     } else if (y2 < tg) {
                         tg = y2
                         isPlus = true
                         isSwipe = true
-                        countDownTimerSwipe.start()
+//                        countDownTimerSwipe.cancel()
+//                        countDownTimerSwipe.start()
                     }
 
                     Log.e("II", "$tg $y2")
