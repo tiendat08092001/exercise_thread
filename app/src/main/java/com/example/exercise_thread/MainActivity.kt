@@ -152,6 +152,8 @@ class MainActivity : AppCompatActivity() {
                     y2 = event.y
                     Log.e("I", "$tg $y2")
                     isUpdate = false
+                    isRun = false
+                    isTouch = true
                     if (y2 > tg) {
                         tg = y2
                         isPlus = false
