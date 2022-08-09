@@ -4,12 +4,14 @@ import android.annotation.SuppressLint
 import android.graphics.Color
 import android.os.*
 import android.util.Log
+import android.view.GestureDetector
 import android.view.MotionEvent
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import java.util.*
+import kotlin.math.abs
 
 class MainActivity : AppCompatActivity() {
 
@@ -17,18 +19,35 @@ class MainActivity : AppCompatActivity() {
     private var number = 0
     lateinit var textNumber: TextView
     private lateinit var handler: Handler
-    private var y1: Float = 0F
-    private var y2: Float = 0F
+    private var y1: Float = 0f
+    private var y2: Float = 0f
+    private var tg = 0f
+    private var kc: Int = 0
+    private var n: Int = 0
     private lateinit var btnPlus: Button
     private lateinit var btnMinus: Button
     private var isPlus = true
     private var isUpdate = false
     private var isZero = false
     private var isRun = false
-    private  var kc1: Float = 0F
-    private  var kc: Float = 0F
-    private  var kc2: Float = 0F
+    private var isSwipe = false
+
+    private var isUp = false
+    private var isDown = false
+
+
     private var isTouch = false
+
+    private val swipeThread = Thread{
+        while (true) {
+            if (isSwipe) {
+                handler.sendEmptyMessage(MSG_UPDATE_NUMBER)
+                Thread.sleep(80)
+            }
+
+        }
+    }
+
     private val updateNumberThread = Thread {
         while (true) {
             if (isRun) {
@@ -50,7 +69,18 @@ class MainActivity : AppCompatActivity() {
                 }
 
             }
-            Thread.sleep(30)
+            Thread.sleep(60)
+        }
+    }
+
+    private var countDownTimerSwipe = object : CountDownTimer(1, 1) {
+        override fun onTick(p0: Long) {
+            val tag = "Main"
+            Log.i(tag, "Current tick: $p0")
+        }
+
+        override fun onFinish() {
+            isSwipe = false
         }
     }
 
@@ -68,6 +98,7 @@ class MainActivity : AppCompatActivity() {
             isRun = true
         }
     }
+
 
     private var countDownTimerLongClick = object : CountDownTimer(1000, 500) {
         override fun onTick(p0: Long) {
@@ -88,6 +119,7 @@ class MainActivity : AppCompatActivity() {
         handleView()
         mThread.start()
         updateNumberThread.start()
+        swipeThread.start()
 
 
     }
@@ -100,6 +132,8 @@ class MainActivity : AppCompatActivity() {
             when (event.action) {
                 MotionEvent.ACTION_DOWN -> {
                     y1 = event.y
+                    tg = y1
+                    Toast.makeText(this@MainActivity, "$y1 $tg", Toast.LENGTH_SHORT).show()
                     isUpdate = false
                     isRun = false
                     isZero = false
@@ -107,36 +141,41 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 MotionEvent.ACTION_UP -> {
-
                     isUpdate = false
                     isTouch = false
+                    isSwipe = false
                     countDownTimer.cancel()
                     countDownTimer.start()
                 }
 
                 MotionEvent.ACTION_MOVE -> {
-                    isUpdate = false
-                    isZero = false
-                    isTouch = false
                     y2 = event.y
+                    Log.e("I" , "$tg $y2")
 
-
-
-                    if (y2 > y1) {
+                    if (y2 > tg) {
+                        tg = y2
                         isPlus = false
-                        updateNumber()
-//                        y1 = y2
+                        isSwipe = true
+                        countDownTimerSwipe.start()
 
-                    } else if (y2 < y1) {
+                    } else if (y2 < tg) {
+                        tg = y2
                         isPlus = true
-                        updateNumber()
-//                        y1 = y2
+                        isSwipe = true
+                        countDownTimerSwipe.start()
                     }
+
+                    Log.e("II" , "$tg $y2")
+//                    if (tg == y2) {
+//                        isSwipe = false
+//                    }
+
                 }
             }
 
             true
         }
+
 
         btnPlus = findViewById(R.id.btnPlus)
         btnPlus.setOnClickListener {
