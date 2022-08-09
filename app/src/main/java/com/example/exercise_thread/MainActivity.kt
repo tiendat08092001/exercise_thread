@@ -4,14 +4,14 @@ import android.annotation.SuppressLint
 import android.graphics.Color
 import android.os.*
 import android.util.Log
-import android.view.GestureDetector
+
 import android.view.MotionEvent
 import android.widget.Button
 import android.widget.TextView
-import android.widget.Toast
+
 import androidx.appcompat.app.AppCompatActivity
 import java.util.*
-import kotlin.math.abs
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -136,7 +136,6 @@ class MainActivity : AppCompatActivity() {
                 MotionEvent.ACTION_DOWN -> {
                     y1 = event.y
                     tg = y1
-                    Toast.makeText(this@MainActivity, "$y1 $tg", Toast.LENGTH_SHORT).show()
                     isUpdate = false
                     isRun = false
                     isZero = false
