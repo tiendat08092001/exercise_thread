@@ -8,8 +8,10 @@ import android.util.Log
 import android.view.MotionEvent
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
 
 import androidx.appcompat.app.AppCompatActivity
+import java.lang.Math.abs
 import java.util.*
 
 
@@ -38,17 +40,17 @@ class MainActivity : AppCompatActivity() {
 
     private var isTouch = false
 
-    private val swipeThread = Thread {
-        while (true) {
-            if (isSwipe) {
-                handler.sendEmptyMessage(MSG_UPDATE_NUMBER)
-                isRun = false
-                isUpdate = false
-                countDownTimerSwipe.start()
-                Thread.sleep(50)
-            }
-        }
-    }
+//    private val swipeThread = Thread {
+//        while (true) {
+//            if (isSwipe) {
+//                handler.sendEmptyMessage(MSG_UPDATE_NUMBER)
+//                isRun = false
+//                isUpdate = false
+//                countDownTimerSwipe.start()
+//                Thread.sleep(50)
+//            }
+//        }
+//    }
 
     private val updateNumberThread = Thread {
         while (true) {
@@ -122,7 +124,7 @@ class MainActivity : AppCompatActivity() {
         handleView()
         mThread.start()
         updateNumberThread.start()
-        swipeThread.start()
+//        swipeThread.start()
 
 
     }
@@ -134,7 +136,7 @@ class MainActivity : AppCompatActivity() {
             textNumber.onTouchEvent(event)
             when (event.action) {
                 MotionEvent.ACTION_DOWN -> {
-                    y1 = event.y
+                    y1 = event.rawY
                     tg = y1
                     isUpdate = false
                     isRun = false
@@ -143,6 +145,7 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 MotionEvent.ACTION_UP -> {
+                    number += (y1 - event.rawY).toInt()
                     isUpdate = false
                     isTouch = false
                     isSwipe = false
@@ -152,34 +155,38 @@ class MainActivity : AppCompatActivity() {
 
                 MotionEvent.ACTION_MOVE -> {
                     y2 = event.y
-                    Log.e("I", "$tg $y2")
-                    isUpdate = false
-                    isRun = false
-                    isTouch = true
-
-                    if (y2 == y1) {
-                        isSwipe = true
-                        isPlus = true
-                    }
-
-                    if (y2 > tg) {
-                        tg = y2
-                        isPlus = false
-                        isSwipe = true
-
-
-                    } else if (y2 < tg) {
-                        tg = y2
-                        isPlus = true
-                        isSwipe = true
-//                        countDownTimerSwipe.cancel()
-//                        countDownTimerSwipe.start()
-                    }
-
-                    Log.e("II", "$tg $y2")
-//                    if (tg == y2) {
-//                        isSwipe = false
+//                    Log.e("I", "$tg $y2")
+//                    isUpdate = false
+//                    isRun = false
+//                    isTouch = true
+//
+//                    if (y2 == y1) {
+//                        isSwipe = true
+//                        isPlus = true
 //                    }
+//
+//                    if (y2 > tg) {
+//                        tg = y2
+//                        isPlus = false
+//                        isSwipe = true
+//
+//
+//                    } else if (y2 < tg) {
+//                        tg = y2
+//                        isPlus = true
+//                        isSwipe = true
+////                        countDownTimerSwipe.cancel()
+////                        countDownTimerSwipe.start()
+//                    }
+//
+//                    Log.e("II", "$tg $y2")
+////                    if (tg == y2) {
+////                        isSwipe = false
+////                    }
+
+                    val x = (y1 - event.rawY)
+                    textNumber.text = "${number + x.toInt()}"  // << add
+
 
                 }
             }
@@ -284,4 +291,5 @@ class MainActivity : AppCompatActivity() {
         private const val MSG_UPDATE_NUMBER_DONE = 101
     }
 }
+
 
