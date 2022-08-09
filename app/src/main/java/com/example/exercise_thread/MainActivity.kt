@@ -38,13 +38,12 @@ class MainActivity : AppCompatActivity() {
 
     private var isTouch = false
 
-    private val swipeThread = Thread{
+    private val swipeThread = Thread {
         while (true) {
             if (isSwipe) {
                 handler.sendEmptyMessage(MSG_UPDATE_NUMBER)
                 Thread.sleep(80)
             }
-
         }
     }
 
@@ -88,6 +87,7 @@ class MainActivity : AppCompatActivity() {
         override fun onTick(p0: Long) {
             val tag = "Main"
             Log.i(tag, "Current tick: $p0")
+            isUpdate = false
         }
 
         override fun onFinish() {
@@ -150,12 +150,13 @@ class MainActivity : AppCompatActivity() {
 
                 MotionEvent.ACTION_MOVE -> {
                     y2 = event.y
-                    Log.e("I" , "$tg $y2")
-
+                    Log.e("I", "$tg $y2")
+                    isUpdate = false
                     if (y2 > tg) {
                         tg = y2
                         isPlus = false
                         isSwipe = true
+
                         countDownTimerSwipe.start()
 
                     } else if (y2 < tg) {
@@ -165,7 +166,7 @@ class MainActivity : AppCompatActivity() {
                         countDownTimerSwipe.start()
                     }
 
-                    Log.e("II" , "$tg $y2")
+                    Log.e("II", "$tg $y2")
 //                    if (tg == y2) {
 //                        isSwipe = false
 //                    }
